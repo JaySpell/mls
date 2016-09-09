@@ -4,17 +4,18 @@ import shutil
 import datetime
 from bs4 import BeautifulSoup
 
-def get_mls_data():
+def get_mls_data(**kwargs):
     '''
     Gets MLS data utilizing screen scraping of mechanize
     output will be saved to tab delemited file in outputs
     folder
     '''
-    q_url = config.get_q_url()          #Query URL
-    l_url = config.get_l_url()          #Login URL
-    cs_url = config.get_cs_url()        #Custom Search URL
-    uid = config.get_user()             #Username
-    password = config.get_password()    #Password
+
+    q_url = kwargs.get('q_url', None)           #Query URL
+    l_url = kwargs.get('l_url', None)           #Login URL
+    cs_url = kwargs.get('cs_url', None)         #Custom Search URL
+    uid = kwargs.get('username', None)          #Username
+    password = kwargs.get('password', None)     #Password
 
     #Login to site
     br = mechanize.Browser()
@@ -33,25 +34,35 @@ def get_mls_data():
     br.open(cs_url)
 
     #Get encoded url - open download page
-    date_list = get_date_list
-    query_url = q_url + get_encoded_url(date_list[0], date_list[1])
-    br.open(query_url)
-    br.select_form(name='downloadform')
+    date_list = get_date_list()
+    query_url = map(lambda q: get_encoded_url(q, q_url), date_list)
 
-    #Save results to file with name of day
-    with open('results.txt', 'wb') as f:
-        shutil.copyfileobj(br.submit(), f)
+    for query, date in query_url:
+        br.open(query_url)
+        br.select_form(name='downloadform')
 
-def get_date_list(start_date='today'):
-    if start_date == 'today':
-        date
+        #Save results to file with name of day
+        with open('/output/'+ date.replace('/', '') + '.txt', 'wb') as f:
+            shutil.copyfileobj(br.submit(), f)
 
+def get_date_list(numdays=1):
+    date_list = []
+    base = datetime.datetime.today()
+    raw_date_list = [base - datetime.timedelta(days=x) for x in range(0, numdays)]
+    for date in raw_date_list:
+        date_list.append(date.strftime("%m/%d/%Y"))
+    return date_list
 
-def get_encoded_url(first_date, sec_date, liststatus='closd'):
+def get_encoded_url(date, q_url, liststatus='closd'):
     encoded = urllib.quote_plus(
                      "((liststatus='" + liststatus +
-                     "' and ClosedDate>=convert(datetime,'" + first_date +
-                     "') AND ClosedDate<=convert(datetime,'" + sec_date +
+                     "' and ClosedDate>=convert(datetime,'" + date +
+                     "') AND ClosedDate<=convert(datetime,'" + date +
                      "')))"
                 )
-    return encoded
+    encoded_query_url = q_url + encoded
+    return encoded_query_url, date
+
+def get_date_range(startdate, enddate):
+    date_list = []
+    date = datetime.date.today()
