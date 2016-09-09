@@ -4,18 +4,19 @@ import shutil
 import datetime
 from bs4 import BeautifulSoup
 
-def get_mls_data(**kwargs):
+def get_mls_data(config_info, numdays=1, **kwargs):
     '''
     Gets MLS data utilizing screen scraping of mechanize
     output will be saved to tab delemited file in outputs
     folder
     '''
 
-    q_url = kwargs.get('q_url', None)           #Query URL
-    l_url = kwargs.get('l_url', None)           #Login URL
-    cs_url = kwargs.get('cs_url', None)         #Custom Search URL
-    uid = kwargs.get('username', None)          #Username
-    password = kwargs.get('password', None)     #Password
+    q_url = config_info['q_url']            #Query URL
+    l_url = config_info['l_url']            #Login URL
+    cs_url = config_info['cs_url']          #Custom Search URL
+    uid = config_info['user']               #Username
+    password = config_info['password']      #Password
+    folder = config_info['folder_out']      #Output file folder
 
     #Login to site
     br = mechanize.Browser()
@@ -34,15 +35,15 @@ def get_mls_data(**kwargs):
     br.open(cs_url)
 
     #Get encoded url - open download page
-    date_list = get_date_list()
+    date_list = get_date_list(numdays)
     query_url = map(lambda q: get_encoded_url(q, q_url), date_list)
 
     for query, date in query_url:
-        br.open(query_url)
+        br.open(query)
         br.select_form(name='downloadform')
 
         #Save results to file with name of day
-        with open('/output/'+ date.replace('/', '') + '.txt', 'wb') as f:
+        with open(folder + date.replace('/', '') + '.txt', 'wb') as f:
             shutil.copyfileobj(br.submit(), f)
 
 def get_date_list(numdays=1):
