@@ -1,2 +1,7 @@
 config.py*
 *pyc
+/bin
+/lib
+/local
+pip*
+/share
