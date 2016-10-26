@@ -403,4 +403,3 @@ class PropWatersewer(BaseModel):
             (('property', 'watersewer'), True),
         )
         primary_key = CompositeKey('property', 'watersewer')
-
