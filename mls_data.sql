@@ -70,7 +70,7 @@ CREATE TABLE prop_other (
   utildist              boolean,
   vacation_rent         boolean,
   yearbuiltsrc          varchar(25),
-  yearbuiltflay         boolean,
+  yearbuiltflag         boolean,
   wateramenity          varchar(25),
   vow                   boolean
 );
