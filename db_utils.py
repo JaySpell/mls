@@ -201,69 +201,107 @@ def table_mappings(tblname):
 
         'garagecarport': {
             'fields': [],
+            'keys': [
+                'property_id', 'garagecarport_id','garagecarport_desc',
+                'garage_desc_id'
+            ]
 
+        },
+        'bath': {
+            'fields': [],
+            'keys': ['bath_id','bath_desc']
+        },
+        'prop_bath': {
+            'fields': [],
+            'keys': ['property_id', 'bath_id']
+        },
+        'floors': {
+            'fields': [],
+            'keys': ['floors_id','floors_desc']
+        },
+        'prop_floors': {
+            'fields': [],
+            'keys': ['property_id','floors_id']
+
+        },
+        'foundation': {
+            'fields': [],
+            'keys': ['foundation_id','foundation_desc']
+        },
+        'prop_foundation': {
+            'fields': [],
+            'keys': ['property_id','foundation_id']
+        },
+        'geomarketarea': {
+            'fields': [],
+            'keys': ['geo_market_area_id','geo_market_desc']
+        },
+        'geoschoolelm': {
+            'fields': [],
+            'keys': ['geo_se_id','geo_se_desc']
+        },
+        'geoschoolmid': {
+            'fields': [],
+            'keys': ['geo_mid_id','geo_mid_desc']
+        },
+        'geoschoolhigh': {
+            'fields': [],
+            'keys': ['geo_high_id','geo_high_desc']
+        },
+        'disclosures': {
+            'fields': ['disclosure_id', 'Disclosures'],
+            'keys': ['disclosure_id','disclosure_desc']
+        },
+        'listing_disclosures': {
+            'fields': [],
+            'keys': ['list_id','disclosure_id']
+        },
+        'financeavail': {
+            'fields': ['financeavail_id', 'FinanceAvail'],
+            'keys': ['financeavail_id','financeavail_desc']
+        },
+        'listing_financeavail': {
+            'fields': ['list_id', 'financeavail_id'],
+            'keys': ['list_id','financeavail_id']
+        },
+        'listing': {
+            'fields': [
+                'list_id', 'property_id', 'MLSNum', 'ListDate', 'ListPrice',
+                'ListPriceOrig', 'PhoneApptDesc', 'PhoneAlt', 'PhoneNight',
+                'PhotoCount', 'PointsDiscount', 'PendingDate', 'RealRemarks',
+                'Remarks', 'RemovalOptDate', 'RepairSeller', 'ShowInstr',
+                'TitlePaidBy', 'WebAddress', 'WithdrawnDate',
+                'VariableDualRate', 'OffMarketDate', 'OnlineBidding',
+                'OnlineBiddingDate', 'AgentList', 'AgenSell', 'AgentWeb'
+            ],
+            'keys': [
+                'list_id', 'property_id', 'mlsnum', 'list_date', 'list_price',
+                'list_price_orig', 'phoneapptdesc', 'phone_alt', 'phone_night',
+                'photo_count', 'points_discount', 'pendingdate', 'realremark',
+                'remarks', 'removaloptdate', 'repairseller', 'showinstruct',
+                'title_paid_by', 'webaddr', 'withdrawndate',
+                'variable_dual_rate', 'offmarketdate', 'onlinebid',
+                'onlinebiddate', 'agentlist', 'agentsell', 'agentweb'
+            ]
+        },
+        'listtype': {
+            'fields': ['ltype_id', 'ListType'],
+            'keys': ['ltype_id', 'ltype_info']
+        },
+        'listing_listtype': {
+            'fields': ['list_id', 'ltype_id'],
+            'keys': ['list_id', 'ltype_id']
+        },
+        'price': {
+            'fields': [
+                'price_id', 'list_id', 'PriceSqftList', 'PriceSqFtSold',
+                'SalesPrice', 'SellerToClosingCosts'
+            ],
+            'keys': [
+                'price_id', 'list_id', 'pricesqftlist', 'pricesqftsold',
+                'sale_price', 'seller_closing_cost'
+            ]
         }
 
-        'garagecarport_id',
-        'garagecarport_desc',
 
-        'prop_garagecarport':
-        'property_id',
-        'garage_desc_id',
-
-        'bath':
-        'bath_id',
-        'bath_desc',
-
-        'prop_bath':
-        'property_id',
-        'bath_id',
-
-        'floors':
-        'floors_id',
-        'floors_desc',
-
-        'prop_floors':
-        'property_id',
-        'floors_id',
-
-        'foundation':
-        'foundation_id',
-        'foundation_desc',
-
-        'prop_foundation':
-        'property_id',
-        'foundation_id',
-
-        'geomarketarea':
-        'geo_market_area_id',
-        'geo_market_desc',
-
-        'geoschoolelm':
-        'geo_se_id',
-        'geo_se_desc',
-
-        'geoschoolmid':
-        'geo_mid_id',
-        'geo_mid_desc',
-
-        'geoschoolhigh':
-        'geo_high_id',
-        'geo_high_desc',
-
-        'disclosures':
-        'disclosure_id',
-        'disclosure_desc',
-
-        'listing_disclosures':
-        'list_id',
-        'disclosure_id',
-
-        'financeavail':
-        'financeavail_id',
-        'financeavail_desc',
-
-        'listing_financeavail':
-        'list_id',
-        'financeavail_id',
     }
