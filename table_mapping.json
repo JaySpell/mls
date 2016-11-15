@@ -49,15 +49,15 @@
       },
       "prop_geoinfo": {
           "fields": [
-
-
-
+            "index", "gpExt_GeoCodeProvider", "gpExt_Latitude",
+            "SectionNum", "GeoMarketArea", "GeoSchoolElementary",
+            "GeoSchoolMiddle", "GeoSchoolHigh"
           ],
           "keys": [
               "property_id","gpext_geocodeprov","gpext_latitude",
-              "section_num","geo_market_area_id","geo_se_id","geo_mid_id",
-              "geo_high_id"
-          ]
+              "section_num","geo_market_area_id", "geo_se_id",
+              "geo_mid_id", "geo_high_id"
+            ]
       },
       "physicaladdr": {
           "fields": [
@@ -233,5 +233,11 @@
               "price_id", "list_id", "pricesqftlist", "pricesqftsold",
               "sale_price", "seller_closing_cost"
           ]
+      },
+      "foriegn_keys": {
+        "linking": [
+          "geo_market_area_id", "geo_se_id", "geo_mid_desc", "geo_e",
+          "restrictions_id",
+        ]
       }
 }

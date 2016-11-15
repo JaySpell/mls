@@ -1,8 +1,8 @@
 import psycopg2
 import pandas as pd
-import peewee
-from dbmodel import *
-from sqlalchemy import create_engine
+from sqlalchemy import *
+from sqlalchemy.orm import *
+from sqlalchemy.ext.automap import automap_base
 import config
 
 def map_to_db(mls_df):
@@ -36,6 +36,13 @@ def load_db(csv_file):
     post_engine = config.get_post_engine()
     engine = create_engine(post_engine)
 
+    #SQLAlchemy setup base
+    Base = automap_base()
+    Base.prepare(engine, reflect=True)
+
+    #Create dictionary of classes
+    tbl_class = _create_class_dict(Base.classes)
+
     #Read CSV file into dataframe
     df = pd.read_table(csv_file)
 
@@ -54,6 +61,8 @@ def load_db(csv_file):
         )
 
     #Find any duplicates within existing database
+    '''ToDo add better searching (ST, Street, all upper etc...)'''
+
     non_dup_df = (new_df_addr.streetnum.isin(db_df_addr.streetnum) &
         new_df_addr.streetname.isin(db_df_addr.streetname))
 
@@ -70,6 +79,8 @@ def load_db(csv_file):
     #Get last property_id from property table
     prop_id = get_last_prop_id(engine)
 
+    #
+
     #Commit net new entries
     non_dup_df.to_sql()
     df_to_sql = non_dup_df.concat(
@@ -82,8 +93,54 @@ def load_db(csv_file):
     )
     #Update old entries
 
+def query_table(to, s, q_field, q_str, prop_id):
+    q_filter = (getattr(to, q_field) == q_str))
+    if (s.query(getattr(to, q_field)).
+        filter(getattr(to, q_field) == q_str).first()):
+        return s.query(to)
 
+def _query_table(tblclass, q_field):
+    ######################################################################
 
+    #    Function query_table <-- needs valid table name & query field   #
+    #    -----------------------------------------------------------     #
+    #    Finds the PKID of entry based on the query filed (q_field)      #
+
+    ######################################################################
+    session.execute(
+        select(
+                [tblname.desc, tblname.id],
+                tblname.desc.in_((qfield))
+            )
+    ).fetchall()
+
+def _create_class_dict(groupofclasses):
+    ######################################################################
+
+    #    Function _create_class_dict <-- Base.classes input              #
+    #    -----------------------------------------------------------     #
+    #    Takes group of base classes from SQLAlchemy automap             #
+    #    returns a dictionary with a entry for table name and            #
+    #    a instanstiated class                                           #
+
+    ######################################################################
+	a_dict = {}
+	for a_class in groupofclasses:
+		a_dict[a_class.__table__.name] = a_class
+	return a_dict
+
+def _update_table(tblname, uid_field, linking_id):
+    #Update the table with the field from query & prop_id or listing_id
+    pass
+
+def _get_last_id(s, to, t_id):
+    results = (
+            s.execute(s.query(to).filter(
+                getattr(to, t_id) == s.query(func.max(
+                    getattr(to, t_id)))
+            ))
+        )
+    return results.fetchall()[0][0]
 
 def get_last_prop_id(engine):
     props = pd.read_sql('SELECT property_id FROM property', engine)
@@ -100,10 +157,3 @@ def _records_to_update(tbl_name, engine, field, value):
         return
     else:
         return False
-
-
-def _update_existing(prop_id, df):
-    pass
-
-def make_table_mappings():
-    
