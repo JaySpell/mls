@@ -47,6 +47,76 @@ def load_db(csv_file):
     df = pd.read_table(csv_file)
 
     #Get list of addresses from dataframe
+    non_dup_df = _find_duplicate_records(df, engine)
+
+    #Get last property_id from property table
+    prop_id = get_last_prop_id(engine)
+
+
+    #Commit net new entries
+    non_dup_df.to_sql()
+    df_to_sql = non_dup_df.concat(
+            []
+        )
+    #Update old entries
+
+def _get_create_pkid(to, s, q_field, q_str, t_pk):
+    ######################################################################
+
+    #    Function _get_create_pkid - gets primary key of table from      #
+    #                                field being queried                 #
+    #    -----------------------------------------------------------     #
+    #    Inputs: to = tableobject instantiaed from SQLAlchemy classes    #
+    #            s = SQLAlchemy session                                  #
+    #            q_field = query field / table column to search on       #
+    #            q_str = the record you are looking for                  #
+    #    Returns: primary key id of table                                #
+
+    ######################################################################
+    q_dict = {q_field: q_str}
+    q_it = (
+            s.query(getattr(to, q_field)).
+            filter(getattr(to, q_field) == q_str).first()
+        )
+
+    if q_it:
+        c_id = s.query(to).filter_by(**q_dict).first()
+        return getattr(c_id, t_pk)
+    else:
+        c_id = _get_last_id(s,to,t_pk) + 1
+        q_dict[t_pk] = c_id
+        add_it = to(**q_dict)
+        s.add(add_it)
+        s.commit()
+        return c_id
+
+def _create_class_dict(groupofclasses):
+    ######################################################################
+
+    #    Function _create_class_dict <-- Base.classes input              #
+    #    -----------------------------------------------------------     #
+    #    Takes group of base classes from SQLAlchemy automap             #
+    #    returns a dictionary with a entry for table name and            #
+    #    a instanstiated class                                           #
+
+    ######################################################################
+	a_dict = {}
+	for a_class in groupofclasses:
+		a_dict[a_class.__table__.name] = a_class
+	return a_dict
+
+def _find_duplicate_records(df, engine):
+    ######################################################################
+
+    #    Function _find_duplicate_records <-- dataframe / engine         #
+    #    -----------------------------------------------------------     #
+    #    Takes a dataframe and find duplicates within database           #
+    #    ***specific to mls database - would need modification***        #
+    #    ***for re-use                                        ***        #
+
+    ######################################################################
+
+    #Set new dataframe by concat of existing
     new_df_addr = df.concat(
             [
                 df['StreetName'],
@@ -56,6 +126,7 @@ def load_db(csv_file):
             ]
         )
 
+    #Set a new dataframe based on the database table
     db_df_addr = pd.read_sql(
             'SELECT streetnum, streetname, zipcode FROM physicaladdr', engine)
         )
@@ -76,58 +147,7 @@ def load_db(csv_file):
     for a_dup in dups:
         non_dup_df.drop(non_dup_df.index[a_dup])
 
-    #Get last property_id from property table
-    prop_id = get_last_prop_id(engine)
-
-    #
-
-    #Commit net new entries
-    non_dup_df.to_sql()
-    df_to_sql = non_dup_df.concat(
-        [
-
-
-        ]
-
-
-    )
-    #Update old entries
-
-def query_table(to, s, q_field, q_str, prop_id):
-    q_filter = (getattr(to, q_field) == q_str))
-    if (s.query(getattr(to, q_field)).
-        filter(getattr(to, q_field) == q_str).first()):
-        return s.query(to)
-
-def _query_table(tblclass, q_field):
-    ######################################################################
-
-    #    Function query_table <-- needs valid table name & query field   #
-    #    -----------------------------------------------------------     #
-    #    Finds the PKID of entry based on the query filed (q_field)      #
-
-    ######################################################################
-    session.execute(
-        select(
-                [tblname.desc, tblname.id],
-                tblname.desc.in_((qfield))
-            )
-    ).fetchall()
-
-def _create_class_dict(groupofclasses):
-    ######################################################################
-
-    #    Function _create_class_dict <-- Base.classes input              #
-    #    -----------------------------------------------------------     #
-    #    Takes group of base classes from SQLAlchemy automap             #
-    #    returns a dictionary with a entry for table name and            #
-    #    a instanstiated class                                           #
-
-    ######################################################################
-	a_dict = {}
-	for a_class in groupofclasses:
-		a_dict[a_class.__table__.name] = a_class
-	return a_dict
+    return non_dup_df
 
 def _update_table(tblname, uid_field, linking_id):
     #Update the table with the field from query & prop_id or listing_id
