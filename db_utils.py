@@ -4,6 +4,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import *
 from sqlalchemy.ext.automap import automap_base
 import config
+import json
 
 def map_to_db(mls_df):
     ################################################
@@ -16,7 +17,7 @@ def map_to_db(mls_df):
 
 def load_db(csv_file):
 
-    ######################################################################
+    '''###################################################################
 
     #    Function load_db(csv_file) <-- csv file with full path          #
     #    -----------------------------------------------------------     #
@@ -30,7 +31,7 @@ def load_db(csv_file):
     #                return new df with entry removed                    #
     #        - get last prop_id & append to dataframe                    #
 
-    ######################################################################
+    ###################################################################'''
 
     #Setup connection to DB using info pulled from config
     post_engine = config.get_post_engine()
@@ -52,13 +53,19 @@ def load_db(csv_file):
     #Get last property_id from property table
     prop_id = get_last_prop_id(engine)
 
-
     #Commit net new entries
     non_dup_df.to_sql()
     df_to_sql = non_dup_df.concat(
             []
         )
     #Update old entries
+
+    #Create dataframe for each table
+    with open('table_mapping.json') as table_mapping:
+        all_tables = json.load(table_mapping)
+        for table in all_tables.items():
+            table = pd.dataframe()
+
 
 def _get_create_pkid(to, s, q_field, q_str, t_pk):
     ######################################################################
@@ -70,7 +77,8 @@ def _get_create_pkid(to, s, q_field, q_str, t_pk):
     #            s = SQLAlchemy session                                  #
     #            q_field = query field / table column to search on       #
     #            q_str = the record you are looking for                  #
-    #    Returns: primary key id of table                                #
+    #            t_pk = name of the table primary key                    #
+    #    Returns: primary key id of record                               #
 
     ######################################################################
     q_dict = {q_field: q_str}

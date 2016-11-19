@@ -145,13 +145,13 @@ CREATE TABLE prop_rangetype (
 );
 
 CREATE TABLE subdivsion (
-  sub_id                serial PRIMARY KEY,
-  sub_desc              varchar(50)
+  subdivision_id        serial PRIMARY KEY,
+  subdivision_desc      varchar(50)
 );
 
 CREATE TABLE garage (
-  garage_desc_id        serial PRIMARY KEY,
-  garage_desc_name      varchar(50),
+  garage_id             serial PRIMARY KEY,
+  garage_desc           varchar(50),
 );
 
 CREATE TABLE prop_garage (
@@ -248,7 +248,7 @@ CREATE TABLE listing_financeavail (
 
 CREATE TABLE physicaladdr (
   property_id           bigserial REFERENCES property (property_id),
-  physicaladdr_id       serial,
+  physicaladdr_id       bigserial,
   state                 smallint,
   streetdir             char(1),
   streetname            varchar(50),
