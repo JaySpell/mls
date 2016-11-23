@@ -40,6 +40,9 @@ def load_db(csv_file):
     #SQLAlchemy setup base
     Base = automap_base()
     Base.prepare(engine, reflect=True)
+    Session = sessionmaker()
+    Session.configure(bind=engine)
+    session = Session()
 
     #Create dictionary of classes
     tbl_class = _create_class_dict(Base.classes)
@@ -53,22 +56,46 @@ def load_db(csv_file):
     #Get last property_id from property table
     prop_id = get_last_prop_id(engine)
 
+
+    #Reset dataframe index
+
+
+
+    #Pull table info from json file
+    with open(config.get_table_mapping()) as table_mapping:
+        all_tables = json.load(table_mapping)
+
+    #Create dataframe for each table
+    for mm_table, mm_fields in all_tables['mm_tables'].iteritems():
+        table_dict = {}
+        for index, val in df[mm_fields[1]].iteritems():
+            get_id = _get_create_pkid(
+                    tbl_class[mm_table], session,
+                    mm_fields[0], val, mm_table + '_id'
+                )
+            table_dict[mm_table] = get_id
+
+    print table_dict
+    
+    '''this will iterate through the rows of a df column
+    for row in my_df.itertuples():
+    	a_list = []
+    	a_list.append(zip(row)[1][0])
+    	temp_df = pd.DataFrame(a_list, columns=['Foundation'])
+    	found_df = found_df.append(temp_df)
+
+    '''
     #Commit net new entries
     non_dup_df.to_sql()
     df_to_sql = non_dup_df.concat(
             []
         )
-    #Update old entries
 
-    #Create dataframe for each table
-    with open('table_mapping.json') as table_mapping:
-        all_tables = json.load(table_mapping)
-        for table in all_tables.items():
-            table = pd.dataframe()
-
+def _switch_columns(df, tbl_class, session, tbl_info):
+    pass
 
 def _get_create_pkid(to, s, q_field, q_str, t_pk):
-    ######################################################################
+    '''###################################################################
 
     #    Function _get_create_pkid - gets primary key of table from      #
     #                                field being queried                 #
@@ -80,13 +107,14 @@ def _get_create_pkid(to, s, q_field, q_str, t_pk):
     #            t_pk = name of the table primary key                    #
     #    Returns: primary key id of record                               #
 
-    ######################################################################
+    ###################################################################'''
     q_dict = {q_field: q_str}
     q_it = (
             s.query(getattr(to, q_field)).
             filter(getattr(to, q_field) == q_str).first()
         )
 
+    print q_field, q_str, t_pk
     if q_it:
         c_id = s.query(to).filter_by(**q_dict).first()
         return getattr(c_id, t_pk)
@@ -125,18 +153,17 @@ def _find_duplicate_records(df, engine):
     ######################################################################
 
     #Set new dataframe by concat of existing
-    new_df_addr = df.concat(
-            [
-                df['StreetName'],
-                df['StreetNum'],
-                df['ZipCode'], axis=1,
-                keys=['streetname', 'streetnum', 'zipcode']
-            ]
+    new_df_addr = pd.concat(
+            [df['StreetName'],
+             df['StreetNum'],
+             df['ZipCode']],
+             axis=1,
+             keys=['streetname', 'streetnum', 'zipcode']
         )
 
     #Set a new dataframe based on the database table
     db_df_addr = pd.read_sql(
-            'SELECT streetnum, streetname, zipcode FROM physicaladdr', engine)
+            'SELECT streetnum, streetname, zipcode FROM physicaladdr', engine
         )
 
     #Find any duplicates within existing database
@@ -168,7 +195,11 @@ def _get_last_id(s, to, t_id):
                     getattr(to, t_id)))
             ))
         )
-    return results.fetchall()[0][0]
+    return_results = results.fetchall()
+    if len(return_results) != 0:
+        return return_results[0][0] + 1
+    else:
+        return 1
 
 def get_last_prop_id(engine):
     props = pd.read_sql('SELECT property_id FROM property', engine)

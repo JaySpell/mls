@@ -61,8 +61,9 @@
       },
       "physicaladdr": {
           "fields": [
-            "index", ""
-
+            "index", "physicaladdr_id","State", "StreetDir", "StreetName",
+            "StreetNum", "StreetNumDisplay", "subdivision_id", "ZipCode",
+            "zip4"
           ],
           "keys": [
               "property_id","physicaladdr_id","state","streetdir",
@@ -70,128 +71,49 @@
               "zipcode","zip4"
           ]
       },
-      "restrictions": {
-          "fields": ["restrictions_id", "Restrictions"],
-          "keys": ["restrictions_id","restrictions_desc"]
-      },
       "prop_restrictions": {
           "fields": ["index", "restrictions_id" ],
           "keys": ["property_id","restrictions_id"]
       },
-      "schooldistrict": {
-          "fields": [],
-          "keys": ["schooldistrict_id","schooldistrict_desc"]
-      },
       "prop_schooldistrict": {
-          "fields": [],
+          "fields": ["index", "SchoolDistrict"],
           "keys": ["property_id","schooldistrict_id"]
-
-      },
-      "watersewer": {
-          "fields": [],
-          "keys": ["watersewer_id","watersewer_desc" ]
-
       },
       "prop_watersewer": {
-          "fields": [],
+          "fields": ["index", "WaterSewer"],
           "keys": ["property_id","watersewer_id"]
       },
-      "streetsurface": {
-          "fields": [],
-          "keys": ["streetsurface_id","streetsurface_desc"]
-      },
       "prop_streetsurface": {
-          "fields": [],
+          "fields": ["index", "StreetSurface"],
           "keys": ["property_id","streetsurface_id"]
       },
-      "exemptions": {
-          "fields": [],
-          "keys": ["exemptions_id","exemptions_desc"]
-      },
       "prop_exemptions": {
-          "fields": [],
+          "fields": ["index", "Exemptions"],
           "keys": ["property_id","exemptions_id"]
-
-      },
-      "rangetype": {
-          "fields": [],
-          "keys": ["rangetype_id","rangetype_desc"]
       },
       "prop_rangetype": {
-          "fields": [],
+          "fields": ["index", "RangeType"],
           "keys": ["property_id","rangetype_id"]
       },
-      "subdivsion": {
-          "fields": [],
-          "keys": ["sub_id","sub_desc"]
-      },
-      "garage": {
-          "fields": [],
-          "keys":["garage_desc_id","garage_desc_name"]
-      },
       "prop_garage": {
-          "fields": [],
+          "fields": ["index", "GarageDesc"],
           "keys": ["property_id","garage_desc_id"]
       },
-      "garagecarport": {
-          "fields": [],
-          "keys": [
-              "property_id", "garagecarport_id","garagecarport_desc",
-              "garage_desc_id"
-          ]
-      },
-      "bath": {
-          "fields": [],
-          "keys": ["bath_id","bath_desc"]
-      },
       "prop_bath": {
-          "fields": [],
+          "fields": ["index", "Bath"],
           "keys": ["property_id", "bath_id"]
-      },
-      "floors": {
-          "fields": ["Floors"],
-          "keys": ["floors_id","floors_desc"]
       },
       "prop_floors": {
           "fields": ["index", "Floors"],
           "keys": ["property_id","floors_id"]
-
-      },
-      "foundation": {
-          "fields": ["Foundation"],
-          "keys": ["foundation_id","foundation_desc"]
       },
       "prop_foundation": {
           "fields": ["index", "Foundation"],
           "keys": ["property_id","foundation_id"]
       },
-      "geomarketarea": {
-          "fields": ["geo_market_area_id", "GeoMarketArea"],
-          "keys": ["geo_market_area_id","geo_market_desc"]
-      },
-      "geoschoolelm": {
-          "fields": ["geo_se_id", "GeoSchoolElementary"],
-          "keys": ["geo_se_id","geo_se_desc"]
-      },
-      "geoschoolmid": {
-          "fields": ["geo_mid_id", "GeoSchoolMiddle"],
-          "keys": ["geo_mid_id","geo_mid_desc"]
-      },
-      "geoschoolhigh": {
-          "fields": ["geo_high_id", "GeoSchoolHigh"],
-          "keys": ["geo_high_id","geo_high_desc"]
-      },
-      "disclosures": {
-          "fields": ["disclosure_id", "Disclosures"],
-          "keys": ["disclosure_id","disclosure_desc"]
-      },
       "listing_disclosures": {
           "fields": ["list_id", "Disclosures"],
           "keys": ["list_id","disclosure_id"]
-      },
-      "financeavail": {
-          "fields": ["financeavail_id", "FinanceAvail"],
-          "keys": ["financeavail_id","financeavail_desc"]
       },
       "listing_financeavail": {
           "fields": ["list_id", "financeavail_id"],
@@ -217,10 +139,6 @@
               "onlinebiddate", "agentlist", "agentsell", "agentweb"
           ]
       },
-      "listtype": {
-          "fields": ["ltype_id", "ListType"],
-          "keys": ["ltype_id", "ltype_info"]
-      },
       "listing_listtype": {
           "fields": ["list_id", "ltype_id"],
           "keys": ["list_id", "ltype_id"]
@@ -234,19 +152,26 @@
               "price_id", "list_id", "pricesqftlist", "pricesqftsold",
               "sale_price", "seller_closing_cost"
           ]
-      },
-      "link_tables": {
-          "foundation": "foundation_desc", "geomarketarea": "geo_market_desc",
-          "garage": "garage_desc", "subdivison": "subdivision_desc",
-          "bath": "bath_desc", "floors": "floors_desc",
-          "rangetype": "rangetype_desc", "disclosures": "disclosures_desc",
-          "streetsurface": "streetsurface_desc", "watersewer": "watersewer_desc",
-          "exemptions": "exemptions_desc",
-          "schooldistrict": "schooldistrict_desc",
-          "restrictions": "restrictions_desc",
-          "garagecarport": "garagecarport_desc", "floors": "floors_desc",
-          "financeavail": "financeavail_desc", "geoschoolelm": "geo_se_desc",
-          "geoschoolmid": "geo_mid_desc", "geoschoolhigh": "geo_high_desc"
-        }
+      }
+    },
+    "mm_tables": {
+        "foundation": ["foundation_desc", "Foundation"],
+        "geomarketarea": ["geo_market_desc", "GeoMarketArea"],
+        "garage": ["garage_desc", "GarageDesc"],
+        "garagecarport": ["garagecarport_desc", "GarageCarport"],
+        "subdivison": ["subdivision_desc", "LegalSubdivision"],
+        "bath": ["bath_desc", "BathMasterDesc"],
+        "floors": ["floors_desc", "Floors"],
+        "rangetype": ["rangetype_desc", "RangeType"],
+        "disclosures": ["disclosures_desc", "Disclosures"],
+        "streetsurface": ["streetsurface_desc", "StreetSurface"],
+        "watersewer": ["watersewer_desc", "WaterSewer"],
+        "exemptions": ["exemptions_desc", "Exemptions"],
+        "restrictions": ["restrictions_desc", "Restrictions"],
+        "financeavail": ["financeavail_desc", "FinanceAvail"],
+        "geoschoolelm": ["geo_se_desc", "GeoSchoolElementary"],
+        "geoschoolmid": ["geo_mid_desc", "GeoSchoolMiddle"],
+        "geoschoolhigh": ["geo_high_desc", "GeoSchoolHigh"],
+        "schooldistrict": ["schooldistrict_id", "SchoolDistrict"]
       }
 }

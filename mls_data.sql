@@ -188,7 +188,7 @@ CREATE TABLE floors (
 );
 
 CREATE TABLE prop_floors (
-  property_id           serial REFERENCES property (property_id),
+  property_id           bigserial REFERENCES property (property_id),
   floors_id             serial REFERENCES floors (floors_id),
   PRIMARY KEY (property_id, floors_id)
 );
@@ -211,17 +211,17 @@ CREATE TABLE geomarketarea (
 
 CREATE TABLE geoschoolelm (
   geo_se_id             serial PRIMARY KEY,
-  geo_se_desc           varchar(50)
+  geo_se_desc           bigserial
 );
 
 CREATE TABLE geoschoolmid (
   geo_mid_id            serial PRIMARY KEY,
-  geo_mid_desc          varchar(50)
+  geo_mid_desc          bigserial
 );
 
 CREATE TABLE geoschoolhigh (
   geo_high_id           serial PRIMARY KEY,
-  geo_high_desc         varchar(50)
+  geo_high_desc         bigserial
 );
 
 CREATE TABLE disclosures (
