@@ -55,8 +55,8 @@
           ],
           "keys": [
               "property_id","gpext_geocodeprov","gpext_latitude",
-              "section_num","geo_market_area_id", "geo_se_id",
-              "geo_mid_id", "geo_high_id"
+              "section_num","geomarketarea_id", "geoschoolelm_id",
+              "geoschoolmid_id", "geoschoolhigh_id"
             ]
       },
       "physicaladdr": {
@@ -156,10 +156,10 @@
     },
     "mm_tables": {
         "foundation": ["foundation_desc", "Foundation"],
-        "geomarketarea": ["geo_market_desc", "GeoMarketArea"],
+        "geomarketarea": ["geomarketarea_desc", "GeoMarketArea"],
         "garage": ["garage_desc", "GarageDesc"],
         "garagecarport": ["garagecarport_desc", "GarageCarport"],
-        "subdivison": ["subdivision_desc", "LegalSubdivision"],
+        "subdivision": ["subdivision_desc", "LegalSubdivision"],
         "bath": ["bath_desc", "BathMasterDesc"],
         "floors": ["floors_desc", "Floors"],
         "rangetype": ["rangetype_desc", "RangeType"],
@@ -169,9 +169,9 @@
         "exemptions": ["exemptions_desc", "Exemptions"],
         "restrictions": ["restrictions_desc", "Restrictions"],
         "financeavail": ["financeavail_desc", "FinanceAvail"],
-        "geoschoolelm": ["geo_se_desc", "GeoSchoolElementary"],
-        "geoschoolmid": ["geo_mid_desc", "GeoSchoolMiddle"],
-        "geoschoolhigh": ["geo_high_desc", "GeoSchoolHigh"],
+        "geoschoolelm": ["geoschoolelm_desc", "GeoSchoolElementary"],
+        "geoschoolmid": ["geoschoolmid_desc", "GeoSchoolMiddle"],
+        "geoschoolhigh": ["geoschoolhigh_desc", "GeoSchoolHigh"],
         "schooldistrict": ["schooldistrict_id", "SchoolDistrict"]
       }
 }

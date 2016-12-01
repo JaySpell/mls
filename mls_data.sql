@@ -144,20 +144,20 @@ CREATE TABLE prop_rangetype (
   PRIMARY KEY (property_id, rangetype_id)
 );
 
-CREATE TABLE subdivsion (
+CREATE TABLE subdivision (
   subdivision_id        serial PRIMARY KEY,
   subdivision_desc      varchar(50)
 );
 
 CREATE TABLE garage (
   garage_id             serial PRIMARY KEY,
-  garage_desc           varchar(50),
+  garage_desc           varchar(50)
 );
 
 CREATE TABLE prop_garage (
   property_id           serial REFERENCES property (property_id),
-  garage_desc_id        serial REFERENCES garage (garage_desc_id)
-  PRIMARY KEY (property_id, garage_desc_id)
+  garage_id             serial REFERENCES garage (garage_id),
+  PRIMARY KEY (property_id, garage_id)
 );
 
 CREATE TABLE garagecarport (
@@ -205,45 +205,33 @@ CREATE TABLE prop_foundation (
 );
 
 CREATE TABLE geomarketarea (
-  geo_market_area_id    serial PRIMARY KEY,
-  geo_market_desc       varchar(50)
+  geomarketarea_id    serial PRIMARY KEY,
+  geomarketarea_desc  varchar(50)
 );
 
 CREATE TABLE geoschoolelm (
-  geo_se_id             serial PRIMARY KEY,
-  geo_se_desc           bigserial
+  geoschoolelm_id       serial PRIMARY KEY,
+  geoschoolelm_desc     bigserial
 );
 
 CREATE TABLE geoschoolmid (
-  geo_mid_id            serial PRIMARY KEY,
-  geo_mid_desc          bigserial
+  geoschoolmid_id       serial PRIMARY KEY,
+  geoschoolmid_desc     bigserial
 );
 
 CREATE TABLE geoschoolhigh (
-  geo_high_id           serial PRIMARY KEY,
-  geo_high_desc         bigserial
+  geoschoolhigh_id      serial PRIMARY KEY,
+  geoschoolhigh_desc    bigserial
 );
 
 CREATE TABLE disclosures (
-  disclosure_id         serial PRIMARY KEY,
-  disclosure_desc       varchar(50)
-);
-
-CREATE TABLE listing_disclosures (
-  list_id               bigserial REFERENCES listing (list_id),
-  disclosure_id         serial REFERENCES disclosures (disclosure_id)
-  PRIMARY KEY (list_id, disclosure_id)
+  disclosures_id         serial PRIMARY KEY,
+  disclosures_desc       varchar(50)
 );
 
 CREATE TABLE financeavail (
-  financeavail_id       serial PRIMARY KEY,
-  financeavail_desc     varchar(25)
-);
-
-CREATE TABLE listing_financeavail (
-  list_id               bigserial REFERENCES listing (list_id),
-  financeavail_id       serial REFERENCES financeavail (financeavail_id),
-  PRIMARY KEY (list_id, financeavail_id)
+  financeavail_id       bigserial PRIMARY KEY,
+  financeavail_desc     varchar(75)
 );
 
 CREATE TABLE physicaladdr (
@@ -254,7 +242,7 @@ CREATE TABLE physicaladdr (
   streetname            varchar(50),
   streetnum             bigint,
   streetnumdis          smallint,
-  sub_id                serial REFERENCES subdivsion (sub_id),
+  subdivision_id        serial REFERENCES subdivision (subdivision_id),
   zipcode               bigint,
   zip4                  smallint,
   PRIMARY KEY (property_id, physicaladdr_id)
@@ -265,10 +253,10 @@ CREATE TABLE prop_geoinfo (
   gpext_geocodeprov     bigint,
   gpext_latitude        real,
   section_num           bigint,
-  geo_market_area_id    serial REFERENCES geomarketarea (geo_market_area_id),
-  geo_se_id             serial REFERENCES geoschoolelm (geo_se_id),
-  geo_mid_id            serial REFERENCES geoschoolmid (geo_mid_id),
-  geo_high_id           serial REFERENCES geoschoolhigh (geo_high_id),
+  geomarketarea_id      serial REFERENCES geomarketarea (geomarketarea_id),
+  geoschoolelm_id       serial REFERENCES geoschoolelm (geoschoolelm_id),
+  geoschoolmid_id       serial REFERENCES geoschoolmid (geoschoolmid_id),
+  geoschoolhigh_id      serial REFERENCES geoschoolhigh (geoschoolhigh_id),
   PRIMARY KEY (property_id)
 );
 
@@ -325,4 +313,16 @@ CREATE TABLE price (
   pricesqftsold         real,
   sale_price            bigint,
   seller_closing_cost   bigint
+);
+
+CREATE TABLE listing_financeavail (
+  list_id               bigserial REFERENCES listing (list_id),
+  financeavail_id       bigserial REFERENCES financeavail (financeavail_id),
+  PRIMARY KEY (list_id, financeavail_id)
+);
+
+CREATE TABLE listing_disclosures (
+  list_id               bigserial REFERENCES listing (list_id),
+  disclosures_id        serial REFERENCES disclosures (disclosures_id),
+  PRIMARY KEY (list_id, disclosures_id)
 );

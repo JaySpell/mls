@@ -54,8 +54,8 @@ def load_db(csv_file):
     non_dup_df = _find_duplicate_records(df, engine)
 
     #Get last property_id from property table
-    prop_id = get_last_prop_id(engine)
-
+    #prop_id = get_last_prop_id(engine)
+    prop_id = _get_last_id(session, tbl_class['property'], 'property_id' )
 
     #Reset dataframe index
 
@@ -69,14 +69,16 @@ def load_db(csv_file):
     for mm_table, mm_fields in all_tables['mm_tables'].iteritems():
         table_dict = {}
         for index, val in df[mm_fields[1]].iteritems():
-            get_id = _get_create_pkid(
+            if str(val) != 'nan':
+                get_id = _get_create_pkid(
                     tbl_class[mm_table], session,
                     mm_fields[0], val, mm_table + '_id'
                 )
-            table_dict[mm_table] = get_id
-
+                table_dict[mm_table] = get_id
+            else:
+                next
     print table_dict
-    
+
     '''this will iterate through the rows of a df column
     for row in my_df.itertuples():
     	a_list = []
@@ -108,6 +110,7 @@ def _get_create_pkid(to, s, q_field, q_str, t_pk):
     #    Returns: primary key id of record                               #
 
     ###################################################################'''
+
     q_dict = {q_field: q_str}
     q_it = (
             s.query(getattr(to, q_field)).
@@ -199,7 +202,7 @@ def _get_last_id(s, to, t_id):
     if len(return_results) != 0:
         return return_results[0][0] + 1
     else:
-        return 1
+        return 0
 
 def get_last_prop_id(engine):
     props = pd.read_sql('SELECT property_id FROM property', engine)
